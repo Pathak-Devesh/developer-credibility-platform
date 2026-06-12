@@ -1,9 +1,16 @@
 const express = require('express');
-require('dotenv').config();
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes")
+
+require('dotenv').config();
 
 const app = express();
 const port= process.env.PORT;
+
+connectDB();
+
+app.use("/api/auth",authRoutes);
+
 
 app.get('/', (req,res) => {
     res.send("Hello World!!");
@@ -16,7 +23,6 @@ app.get('/api/health',(req,res) =>{
     });
 });
 
-connectDB();
 
 app.listen(port,(req,res) =>{
     console.log(`Server started at port: ${port}`);
