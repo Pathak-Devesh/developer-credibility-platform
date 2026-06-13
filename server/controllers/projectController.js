@@ -1,4 +1,7 @@
 const Project = require("../models/Project");
+const User = require("../models/User");
+const extractGithubRepoInfo = require("../utils/githubUtils");
+const axios = require("axios");
 
 const createProject = async (req, res) => {
     try {
@@ -9,13 +12,51 @@ const createProject = async (req, res) => {
             });
         }
 
+        const user = await User.findById(req.user.id);
+
+        let verificationStatus = "pending";
+
+        if (githubUrl && user.githubUsername) {
+
+            const repoInfo = extractGithubRepoInfo(githubUrl);
+
+            if (repoInfo) {
+
+                try {
+
+                    const repoResponse = await axios.get(
+                        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}`
+                    );
+
+                    const githubOwner =
+                        repoResponse.data.owner.login;
+
+                    if (
+                        githubOwner.toLowerCase() ===
+                        user.githubUsername.toLowerCase()
+                    ) {
+                        verificationStatus = "verified";
+                    } else {
+                        verificationStatus = "failed";
+                    }
+
+                } catch (error) {
+
+                    verificationStatus = "failed";
+
+                }
+
+            }
+        }
+
         const project = await Project.create({
             title,
             description,
             githubUrl,
             liveUrl,
             techStack,
-            owner: req.user.id
+            owner: req.user.id,
+            verificationStatus
         });
 
         return res.status(201).json({

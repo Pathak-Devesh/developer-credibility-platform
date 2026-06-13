@@ -41,7 +41,7 @@ const projectSchema = new mongoose.Schema(
 
         verificationStatus: {
             type: String,
-            enum: ["pending", "verified", "rejected"],
+            enum: ["pending", "verified", "failed"],
             default: "pending"
         }
     },

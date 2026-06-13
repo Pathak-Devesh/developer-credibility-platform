@@ -1,12 +1,13 @@
 const User = require("../models/User");
 const Project = require("../models/Project");
+const axios = require("axios");
 
 
 const getProfile = async (req, res) => {
-    try{
+    try {
         const user = await User.findById(req.user.id).select("-password");
-        
-        if(!user){
+
+        if (!user) {
             return res.status(404).json({
                 message: "User not found",
             });
@@ -14,7 +15,7 @@ const getProfile = async (req, res) => {
 
         return res.json(user);
     }
-    catch(error){
+    catch (error) {
         return res.status(500).json({
             message: "Server error",
             error: error.message
@@ -24,42 +25,42 @@ const getProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-    try{
+    try {
         const user = await User.findById(req.user.id).select("-password");
-        
-        if(!user){
+
+        if (!user) {
             return res.status(404).json({
                 message: "User not found",
             });
         }
 
-        const {bio,headline,skills,githubUsername,linkedinUrl,portfolioUrl} = req.body;
+        const { bio, headline, skills, githubUsername, linkedinUrl, portfolioUrl } = req.body;
 
-        if(bio !== undefined){
-            user.bio=bio;
+        if (bio !== undefined) {
+            user.bio = bio;
         }
-        if(headline !== undefined){
-            user.headline=headline;
+        if (headline !== undefined) {
+            user.headline = headline;
         }
-        if(skills !== undefined){
-            user.skills=skills;
+        if (skills !== undefined) {
+            user.skills = skills;
         }
-        if(githubUsername !== undefined){
-            user.githubUsername=githubUsername;
+        if (githubUsername !== undefined) {
+            user.githubUsername = githubUsername;
         }
-        if(linkedinUrl !== undefined){
-            user.linkedinUrl=linkedinUrl;
+        if (linkedinUrl !== undefined) {
+            user.linkedinUrl = linkedinUrl;
         }
-        if(portfolioUrl !== undefined){
-            user.portfolioUrl=portfolioUrl;
+        if (portfolioUrl !== undefined) {
+            user.portfolioUrl = portfolioUrl;
         }
 
         await user.save();
 
         return res.status(200).json(user);
-        
+
     }
-    catch(error){
+    catch (error) {
         return res.status(500).json({
             message: "Server error",
             error: error.message
@@ -81,8 +82,8 @@ const getPublicProfile = async (req, res) => {
         const projects = await Project.find({
             owner: user._id
         })
-        .select("title description githubUrl liveUrl techStack verificationStatus createdAt")
-        .sort({ createdAt: -1 });
+            .select("title description githubUrl liveUrl techStack verificationStatus createdAt")
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             user,
@@ -97,9 +98,78 @@ const getPublicProfile = async (req, res) => {
     }
 };
 
-const onlyAdmin = async (req,res) =>{
+const getGithubProfile = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (!user.githubUsername) {
+            return res.status(400).json({
+                message: "GitHub username not configured"
+            });
+        }
+
+        const profileUrl =
+            `https://api.github.com/users/${user.githubUsername}`;
+
+        const reposUrl =
+            `https://api.github.com/users/${user.githubUsername}/repos`;
+
+        const [profileResponse, reposResponse] = await Promise.all([
+            axios.get(profileUrl),
+            axios.get(reposUrl)
+        ]);
+
+        const profile = {
+            login: profileResponse.data.login,
+            name: profileResponse.data.name,
+            avatarUrl: profileResponse.data.avatar_url,
+            profileUrl: profileResponse.data.html_url,
+            bio: profileResponse.data.bio,
+            location: profileResponse.data.location,
+            publicRepos: profileResponse.data.public_repos,
+            followers: profileResponse.data.followers,
+            following: profileResponse.data.following,
+            createdAt: profileResponse.data.created_at
+        };
+
+        const repositories = reposResponse.data
+        .sort((a, b) => b.stargazers_count - a.stargazers_count)
+        .slice(0, 10)
+        .map(repo => ({
+            name: repo.name,
+            description: repo.description,
+            htmlUrl: repo.html_url,
+            language: repo.language,
+            stars: repo.stargazers_count,
+            forks: repo.forks_count,
+            updatedAt: repo.updated_at
+        }));
+
+        return res.status(200).json({
+            profile,
+            repositories
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "Failed to fetch GitHub profile",
+            error: error.message
+        });
+
+    }
+};
+
+const onlyAdmin = async (req, res) => {
     return res.json({
         message: "Welcome admin"
     });
 };
-module.exports = { getProfile,onlyAdmin,updateProfile,getPublicProfile };
+module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile };
