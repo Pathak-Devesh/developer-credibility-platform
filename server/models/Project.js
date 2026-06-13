@@ -43,7 +43,35 @@ const projectSchema = new mongoose.Schema(
             type: String,
             enum: ["pending", "verified", "failed"],
             default: "pending"
+        },
+        githubAnalytics: {
+            stars: {
+                type: Number,
+                default: 0
+            },
+
+            forks: {
+                type: Number,
+                default: 0
+            },
+
+            primaryLanguage: {
+                type: String,
+                default: ""
+            },
+
+            languages: {
+                type: Map,
+                of: Number,
+                default: {}
+            },
+
+            lastSyncedAt: {
+                type: Date,
+                default: null
+            }
         }
+
     },
     {
         timestamps: true

@@ -2,6 +2,7 @@ const Project = require("../models/Project");
 const User = require("../models/User");
 const extractGithubRepoInfo = require("../utils/githubUtils");
 const verifyGithubProject = require("../utils/verifyGithubProject");
+const syncGithubAnalytics = require("../utils/syncGithubAnalytics");
 
 
 const createProject = async (req, res) => {
@@ -16,6 +17,7 @@ const createProject = async (req, res) => {
         const user = await User.findById(req.user.id);
 
         const verificationStatus = await verifyGithubProject(user, githubUrl);
+        const analytics = await syncGithubAnalytics(githubUrl);
 
         const project = await Project.create({
             title,
@@ -24,7 +26,8 @@ const createProject = async (req, res) => {
             liveUrl,
             techStack,
             owner: req.user.id,
-            verificationStatus
+            verificationStatus,
+            githubAnalytics: analytics || undefined
         });
 
         return res.status(201).json({
@@ -115,12 +118,21 @@ const updateProject = async (req, res) => {
             project.techStack = techStack;
         }
 
-        if (githubUrlChanged){
-            
+        if (githubUrlChanged) {
+
             const user = await User.findById(req.user.id);
 
             project.verificationStatus = await verifyGithubProject(user, githubUrl);
-            
+
+            const analytics = await syncGithubAnalytics(githubUrl);
+
+            if (analytics) {
+                project.githubAnalytics = analytics;
+            }
+            else {
+                project.githubAnalytics = undefined;
+            }
+
         }
         await project.save();
 
