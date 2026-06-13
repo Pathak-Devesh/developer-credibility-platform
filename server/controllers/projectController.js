@@ -147,4 +147,71 @@ const deleteProject = async (req, res) => {
     }
 };
 
-module.exports = { createProject, getMyProjects, getProjectById, updateProject, deleteProject };
+const getAllProjects = async (req, res) => {
+    try {
+
+        console.log(req.query);
+        console.log(req.query.search);
+
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const search = req.query.search || "";
+        const tech = req.query.tech || "";
+
+        const skip = (page - 1) * limit;
+
+        console.log({
+            page,
+            limit,
+            skip
+        });
+
+        const filter = {};
+
+        if (search) {
+            filter.$or = [
+                {
+                    title: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    description: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                }
+            ];
+        }
+        if (tech) {
+            filter.techStack = {
+                $regex: `^${tech}$`,
+                $options: "i"
+            };
+        }
+
+        const totalProjects = await Project.countDocuments(filter);
+        const totalPages = Math.ceil(totalProjects / limit);
+
+        const projects = await Project.find(filter)
+            .populate("owner", "name")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);;
+
+        res.status(200).json({
+            currentPage: page,
+            totalPages,
+            totalProjects,
+            projects
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+module.exports = { createProject, getMyProjects, getProjectById, updateProject, deleteProject, getAllProjects };
