@@ -1,7 +1,8 @@
 const Project = require("../models/Project");
 const User = require("../models/User");
 const extractGithubRepoInfo = require("../utils/githubUtils");
-const axios = require("axios");
+const verifyGithubProject = require("../utils/verifyGithubProject");
+
 
 const createProject = async (req, res) => {
     try {
@@ -14,40 +15,7 @@ const createProject = async (req, res) => {
 
         const user = await User.findById(req.user.id);
 
-        let verificationStatus = "pending";
-
-        if (githubUrl && user.githubUsername) {
-
-            const repoInfo = extractGithubRepoInfo(githubUrl);
-
-            if (repoInfo) {
-
-                try {
-
-                    const repoResponse = await axios.get(
-                        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}`
-                    );
-
-                    const githubOwner =
-                        repoResponse.data.owner.login;
-
-                    if (
-                        githubOwner.toLowerCase() ===
-                        user.githubUsername.toLowerCase()
-                    ) {
-                        verificationStatus = "verified";
-                    } else {
-                        verificationStatus = "failed";
-                    }
-
-                } catch (error) {
-
-                    verificationStatus = "failed";
-
-                }
-
-            }
-        }
+        const verificationStatus = await verifyGithubProject(user, githubUrl);
 
         const project = await Project.create({
             title,
@@ -127,6 +95,10 @@ const updateProject = async (req, res) => {
 
         const { title, description, githubUrl, liveUrl, techStack } = req.body;
 
+        const githubUrlChanged = githubUrl !== undefined && githubUrl !== project.githubUrl;
+
+
+
         if (title !== undefined) {
             project.title = title;
         }
@@ -141,6 +113,14 @@ const updateProject = async (req, res) => {
         }
         if (techStack !== undefined) {
             project.techStack = techStack;
+        }
+
+        if (githubUrlChanged){
+            
+            const user = await User.findById(req.user.id);
+
+            project.verificationStatus = await verifyGithubProject(user, githubUrl);
+            
         }
         await project.save();
 
