@@ -70,7 +70,13 @@ const projectSchema = new mongoose.Schema(
                 type: Date,
                 default: null
             }
-        }
+        },
+        detectedTechnologies: [
+            {
+                type: String,
+                trim: true
+            }
+        ]
 
     },
     {

@@ -1,6 +1,7 @@
 const Project = require("../models/Project");
 const User = require("../models/User");
 const extractGithubRepoInfo = require("../utils/githubUtils");
+const detectRepositoryTechnologies = require("../utils/detectRepositoryTechnologies");
 const verifyGithubProject = require("../utils/verifyGithubProject");
 const syncGithubAnalytics = require("../utils/syncGithubAnalytics");
 
@@ -17,7 +18,10 @@ const createProject = async (req, res) => {
         const user = await User.findById(req.user.id);
 
         const verificationStatus = await verifyGithubProject(user, githubUrl);
-        const analytics = await syncGithubAnalytics(githubUrl);
+
+        const detectedTechnologies = verificationStatus === "verified" ? await detectRepositoryTechnologies(githubUrl) : [];
+
+        const analytics = verificationStatus === "verified" ? await syncGithubAnalytics(githubUrl) : undefined;
 
         const project = await Project.create({
             title,
@@ -27,7 +31,8 @@ const createProject = async (req, res) => {
             techStack,
             owner: req.user.id,
             verificationStatus,
-            githubAnalytics: analytics || undefined
+            githubAnalytics: analytics || undefined,
+            detectedTechnologies,
         });
 
         return res.status(201).json({
@@ -124,14 +129,22 @@ const updateProject = async (req, res) => {
 
             project.verificationStatus = await verifyGithubProject(user, githubUrl);
 
-            const analytics = await syncGithubAnalytics(githubUrl);
+            const isVerified = project.verificationStatus === "verified";
 
-            if (analytics) {
+
+            if (isVerified) {
+                const analytics = await syncGithubAnalytics(githubUrl);
+
                 project.githubAnalytics = analytics;
+
+                project.detectedTechnologies = await detectRepositoryTechnologies(githubUrl);
             }
             else {
                 project.githubAnalytics = undefined;
+
+                project.detectedTechnologies = [];
             }
+
 
         }
         await project.save();
