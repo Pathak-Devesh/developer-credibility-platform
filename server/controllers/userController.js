@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Project = require("../models/Project");
 const axios = require("axios");
+const verifySkills = require("../utils/verifySkills");
 
 
 const getProfile = async (req, res) => {
@@ -140,17 +141,17 @@ const getGithubProfile = async (req, res) => {
         };
 
         const repositories = reposResponse.data
-        .sort((a, b) => b.stargazers_count - a.stargazers_count)
-        .slice(0, 10)
-        .map(repo => ({
-            name: repo.name,
-            description: repo.description,
-            htmlUrl: repo.html_url,
-            language: repo.language,
-            stars: repo.stargazers_count,
-            forks: repo.forks_count,
-            updatedAt: repo.updated_at
-        }));
+            .sort((a, b) => b.stargazers_count - a.stargazers_count)
+            .slice(0, 10)
+            .map(repo => ({
+                name: repo.name,
+                description: repo.description,
+                htmlUrl: repo.html_url,
+                language: repo.language,
+                stars: repo.stargazers_count,
+                forks: repo.forks_count,
+                updatedAt: repo.updated_at
+            }));
 
         return res.status(200).json({
             profile,
@@ -167,9 +168,43 @@ const getGithubProfile = async (req, res) => {
     }
 };
 
+const getSkillVerification = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const verifiedProjects = await Project.find({ owner: user._id, verificationStatus: "verified" });
+
+        const skillVerification = verifySkills(user.skills, verifiedProjects);
+
+        return res.status(200).json({
+            user: {
+                id: user._id,
+                name: user.name
+            },
+            verification: skillVerification
+        });
+
+
+    }
+    catch (error) {
+
+        return res.status(500).json({
+            message: "Failed to verify skills",
+            error: error.message
+        });
+
+    }
+};
+
 const onlyAdmin = async (req, res) => {
     return res.json({
         message: "Welcome admin"
     });
 };
-module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile };
+module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile,getSkillVerification };
