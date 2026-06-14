@@ -5,7 +5,7 @@ const verifySkills = (userSkills, verifiedProjects) => {
 
     for (const project of verifiedProjects) {
 
-        for (const tech of project.detectedTechnologies) {
+        for (const tech of project.detectedTechnologies || []) {
             technologyEvidence.add(tech.toLowerCase());
         }
 

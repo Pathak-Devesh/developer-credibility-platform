@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Project = require("../models/Project");
 const axios = require("axios");
 const verifySkills = require("../utils/verifySkills");
+const calculateSkillVerificationSummary = require("../utils/calculateSkillVerificationSummary");
+const calculateCredibilityScore = require("../utils/calculateCredibilityScore");
 
 
 const getProfile = async (req, res) => {
@@ -80,15 +82,22 @@ const getPublicProfile = async (req, res) => {
             });
         }
 
-        const projects = await Project.find({
-            owner: user._id
-        })
-            .select("title description githubUrl liveUrl techStack verificationStatus createdAt")
+        const projects = await Project.find({owner: user._id})
+            .select("title description githubUrl liveUrl techStack verificationStatus createdAt detectedTechnologies githubAnalytics")
             .sort({ createdAt: -1 });
+
+        const verifiedProjects = projects.filter((project) => project.verificationStatus === "verified");
+
+        const skillVerification = verifySkills(user.skills,verifiedProjects);
+
+        const skillSummary = calculateSkillVerificationSummary(skillVerification);
+
+        const credibility = calculateCredibilityScore(user,skillSummary,verifiedProjects.length);    
 
         return res.status(200).json({
             user,
-            projects
+            projects,
+            credibility
         });
 
     } catch (error) {
@@ -181,13 +190,15 @@ const getSkillVerification = async (req, res) => {
         const verifiedProjects = await Project.find({ owner: user._id, verificationStatus: "verified" });
 
         const skillVerification = verifySkills(user.skills, verifiedProjects);
+        const summary = calculateSkillVerificationSummary(skillVerification);
 
         return res.status(200).json({
             user: {
                 id: user._id,
                 name: user.name
             },
-            verification: skillVerification
+            verification: skillVerification,
+            summary
         });
 
 
