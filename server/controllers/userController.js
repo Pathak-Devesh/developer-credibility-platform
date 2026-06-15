@@ -215,11 +215,53 @@ const getSkillVerification = async (req, res) => {
 
 const getAllDevelopers = async (req, res) => {
     try {
-        const users = await User.find({
+
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const search = req.query.search || "";
+
+        const skip = (page - 1) * limit;
+
+        const filter = {
             role: "developer"
-        }).select(
-            "name headline skills githubUsername linkedinUrl portfolioUrl bio"
-        );
+        };
+
+        if (search) {
+            filter.$or = [
+                {
+                    name: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    headline: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    skills: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                }
+            ];
+        }
+
+        const totalDevelopers =
+            await User.countDocuments(filter);
+
+        const totalPages =
+            Math.ceil(totalDevelopers / limit);
+
+        const users = await User.find(filter)
+            .select(
+                "name headline skills githubUsername linkedinUrl portfolioUrl bio"
+            )
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         const developers = await Promise.all(
             users.map(async (user) => {
@@ -250,16 +292,21 @@ const getAllDevelopers = async (req, res) => {
                     _id: user._id,
                     name: user.name,
                     headline: user.headline,
+                    bio: user.bio,
                     skills: user.skills,
                     githubUsername: user.githubUsername,
-                    bio: user.bio,
                     credibility,
                     verifiedProjects: verifiedProjects.length
                 };
             })
         );
 
-        return res.status(200).json(developers);
+        return res.status(200).json({
+            currentPage: page,
+            totalPages,
+            totalDevelopers,
+            developers
+        });
 
     } catch (error) {
         return res.status(500).json({
