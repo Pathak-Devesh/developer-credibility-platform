@@ -213,9 +213,65 @@ const getSkillVerification = async (req, res) => {
     }
 };
 
+const getAllDevelopers = async (req, res) => {
+    try {
+        const users = await User.find({
+            role: "developer"
+        }).select(
+            "name headline skills githubUsername linkedinUrl portfolioUrl bio"
+        );
+
+        const developers = await Promise.all(
+            users.map(async (user) => {
+
+                const verifiedProjects = await Project.find({
+                    owner: user._id,
+                    verificationStatus: "verified"
+                });
+
+                const skillVerification = verifySkills(
+                    user.skills,
+                    verifiedProjects
+                );
+
+                const skillSummary =
+                    calculateSkillVerificationSummary(
+                        skillVerification
+                    );
+
+                const credibility =
+                    calculateCredibilityScore(
+                        user,
+                        skillSummary,
+                        verifiedProjects.length
+                    );
+
+                return {
+                    _id: user._id,
+                    name: user.name,
+                    headline: user.headline,
+                    skills: user.skills,
+                    githubUsername: user.githubUsername,
+                    bio: user.bio,
+                    credibility,
+                    verifiedProjects: verifiedProjects.length
+                };
+            })
+        );
+
+        return res.status(200).json(developers);
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
 const onlyAdmin = async (req, res) => {
     return res.json({
         message: "Welcome admin"
     });
 };
-module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile,getSkillVerification };
+module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile,getSkillVerification,getAllDevelopers };

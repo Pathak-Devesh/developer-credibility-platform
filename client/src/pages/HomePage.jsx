@@ -3,7 +3,7 @@ function HomePage() {
     <>
       <section className="max-w-7xl mx-auto px-10 pt-24 pb-10 ">
         <div className="flex flex-col gap-6">
-          <p> <span className="bg-red-400/40 rounded-2xl  px-2 py-0.5 text-gray-100">GitHub-Backed Developer Verification</span> </p>
+          <p> <span className="bg-rose-400/30 rounded-2xl  px-2 py-0.5 text-gray-100">GitHub-Backed Developer Verification</span> </p>
 
           <h1 className="text-6xl font-bold leading-tight text-white">
             Build Trust Through
@@ -131,7 +131,7 @@ function HomePage() {
       <section className="max-w-7xl mx-auto px-10 py-20">
 
         <div className="max-w-4xl">
-          <p className="inline-block bg-red-400/40 rounded-2xl px-3 py-1 text-gray-100 mb-6">
+          <p className="inline-block bg-rose-400/30 rounded-2xl px-3 py-1 text-gray-100 mb-6">
             Why Developer Credibility?
           </p>
 
