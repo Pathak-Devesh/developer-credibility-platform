@@ -19,8 +19,8 @@ export default function Navbar() {
                 <NavLink to="/projects">Projects</NavLink>
             </div>
             <div className="flex gap-1">
-                <NavLink to="/login" className="px-2  border-2 rounded-bl-md rounded-tr-md ">login</NavLink>
-                <NavLink to="/register" className=" px-2 rounded-tl-md rounded-br-md  bg-red-400 !text-black">register</NavLink>
+                <NavLink to="/login" className="px-2  border-2 rounded-bl-md rounded-tr-md rounded-br-xs rounded-tl-xs ">login</NavLink>
+                <NavLink to="/register" className=" px-2 rounded-tl-md rounded-br-md rounded-tr-xs rounded-bl-xs bg-red-400 !text-black">register</NavLink>
             </div>
         </nav>
     )

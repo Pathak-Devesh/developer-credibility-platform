@@ -10,7 +10,7 @@ function PublicLayout() {
     <div className="min-h-screen"
          style={{ backgroundImage: `url(${backgroundImage})`,
          backgroundPosition: "25% top",
-         backgroundSize: "130%",backgroundAttachment: "fixed", }}>
+         backgroundSize: "130%",backgroundAttachment: "fixed", backgroundRepeat: "no-repeat",backgroundColor: "#141416",}}>
       <ScrollToTop />
       <Navbar />
       <main>

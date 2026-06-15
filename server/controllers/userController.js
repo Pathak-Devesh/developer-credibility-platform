@@ -259,7 +259,7 @@ const getAllDevelopers = async (req, res) => {
             .select(
                 "name headline skills githubUsername linkedinUrl portfolioUrl bio"
             )
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1,_id: -1 })
             .skip(skip)
             .limit(limit);
 
