@@ -2,10 +2,19 @@ import { Link,NavLink } from "react-router-dom";
 
 export default function Navbar(){
     return (
-        <nav>
-            <Link to="/" >Home</Link>
-            <Link to="/login" >login</Link>
-            <Link to="/register" >register</Link>
+        <nav className="sticky top-0 z-50 text-white flex items-center justify-between rounded-xl bg-gray-950/30 backdrop-blur-lg max-w-7xl mx-auto px-10 py-4">
+            <div>
+                <NavLink to="/" className="text-2xl font-bold">Developer Credibility</NavLink>
+            </div>
+            <div className="flex gap-6">
+                <NavLink to="/" >Home</NavLink>
+                <NavLink to="/developers">Developers</NavLink>
+                <NavLink to="/projects">Projects</NavLink>
+            </div>
+            <div className="flex gap-1">
+            <NavLink to="/login" className="px-2  border-2 rounded-bl-md rounded-tr-md ">login</NavLink>
+            <NavLink to="/register" className=" px-2 rounded-tl-md rounded-br-md  bg-red-400 !text-black">register</NavLink>
+            </div>
         </nav>
     )
 };
