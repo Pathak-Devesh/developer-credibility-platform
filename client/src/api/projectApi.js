@@ -25,3 +25,11 @@ export const createProject = (projectData) => {
 export const deleteProject = (projectId) => {
     return api.delete(`/projects/${projectId}`);
 };
+
+export const getProjectById = (projectId) => {
+    return api.get(`/projects/${projectId}`);
+};
+
+export const updateProject = (projectId, projectData) => {
+    return api.put(`/projects/${projectId}`, projectData);
+};

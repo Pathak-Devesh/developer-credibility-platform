@@ -14,6 +14,7 @@ import ProjectsPage from "./pages/projects/ProjectsPage";
 import DevelopersPage from "./pages/DevelopersPage";
 import MyProjectsPage from "./pages/projects/MyProjectsPage";
 import CreateProjectPage from "./pages/projects/CreateProjectPage";
+import EditProjectPage from "./pages/projects/EditProjectPage";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "projects/new",
         element: <CreateProjectPage />,
+      },
+      {
+        path: "projects/edit/:id",
+        element: <EditProjectPage />,
       },
     ]
   }

@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 function MyProjectCard({ project, onDelete, }) {
+
+    const navigate = useNavigate();
+
     return (
         <div
             className="
@@ -167,14 +172,10 @@ function MyProjectCard({ project, onDelete, }) {
             <div className="mt-6 flex gap-3">
 
                 <button
-                    className="
-                        px-4 py-2
-                        rounded-md
-                        border border-white/10
-                        text-white
-                        hover:border-white/30
-                        transition-colors
-                    "
+                    onClick={() =>
+                        navigate(`/dashboard/projects/edit/${project._id}`)
+                    }
+                    className=" px-4 py-2 rounded-md border border-white/10 text-white hover:border-white/30 transition-colors "
                 >
                     Edit
                 </button>
