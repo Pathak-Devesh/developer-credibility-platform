@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function HomePage() {
   return (
     <>
@@ -22,8 +24,8 @@ function HomePage() {
           </p>
 
           <div className="flex gap-4">
-            <button className="px-4 py-2 rounded-lg font-semibold bg-red-400 text-black">Get Started</button>
-            <button className="px-4 py-2 rounded-lg border-2 border-gray-200 text-gray-200">Explore Developers</button>
+            <Link to ="/register" className="px-4 py-2 rounded-lg font-semibold bg-red-400 text-black hover:!bg-rose-500 ">Get Started</Link>
+            <Link to = "/developers" className="px-4 py-2 rounded-lg border-2 font-semibold border-white !text-white hover:!text-black hover:!bg-white ">Explore Developers</Link>
           </div>
         </div>
       </section>
@@ -179,9 +181,9 @@ function HomePage() {
             evidence-backed credibility to recruiters and collaborators.
           </p>
 
-          <button className="px-6 py-3 rounded-lg font-semibold bg-red-400 text-black">
+          <Link to ="/register" className="px-6 py-3 rounded-lg font-semibold bg-red-400 text-black hover:!bg-rose-500">
             Get Started
-          </button>
+          </Link>
 
         </div>
 

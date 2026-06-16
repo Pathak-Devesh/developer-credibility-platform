@@ -36,7 +36,7 @@ function Footer() {
                         <div className="flex flex-col space-y-2 text-sm text-gray-400">
                             <Link
                                 to="/"
-                                className="transition hover:text-red-500"
+                                className="transition hover:!text-white"
                                 onClick={scrollToTop}
                             >
                                 Home
@@ -44,14 +44,14 @@ function Footer() {
 
                             <Link
                                 to="/developers"
-                                className="transition hover:text-red-500"
+                                className="transition hover:!text-white"
                             >
                                 Developers
                             </Link>
 
                             <Link
                                 to="/projects"
-                                className="transition hover:text-red-500"
+                                className="transition hover:!text-white"
                             >
                                 Projects
                             </Link>
@@ -67,14 +67,14 @@ function Footer() {
                         <div className="flex flex-col space-y-2 text-sm text-gray-400">
                             <Link
                                 to="/login"
-                                className="transition hover:text-red-500"
+                                className="transition hover:!text-white"
                             >
                                 Login
                             </Link>
 
                             <Link
                                 to="/register"
-                                className="transition hover:text-red-500"
+                                className="transition hover:!text-white"
                             >
                                 Register
                             </Link>
