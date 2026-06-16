@@ -1,4 +1,4 @@
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../../api/authApi";
 import { useContext } from "react";
@@ -14,7 +14,7 @@ function LoginPage() {
 
   const { setToken, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,7 +37,12 @@ function LoginPage() {
 
       setUser(profileResponse.data);
 
-      navigate("/dashboard");
+
+      if (profileResponse.data.role === "developer") {
+        navigate("/dashboard");
+      } else {
+        navigate("/recruiter-coming-soon");
+      }
 
     } catch (error) {
       setError(

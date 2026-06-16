@@ -13,3 +13,11 @@ export const getAllProjects = (
         },
     });
 };
+
+export const getMyProjects = () => {
+    return api.get("/projects/my-projects");
+};
+
+export const createProject = (projectData) => {
+    return api.post("/projects", projectData);
+};
