@@ -66,7 +66,11 @@ const getMyProjects = async (req, res) => {
 
 const getProjectById = async (req, res) => {
     try {
-        const project = await Project.findById(req.params.id);
+        const project = await Project.findById(req.params.id)
+            .populate(
+                "owner",
+                "name headline githubUsername"
+            );
 
         if (!project) {
             return res.status(404).json({
