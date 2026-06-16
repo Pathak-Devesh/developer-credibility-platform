@@ -8,10 +8,12 @@ function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("developer");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +36,7 @@ function RegisterPage() {
         name,
         email,
         password,
+         role,
       });
 
       navigate("/login");
@@ -223,6 +226,40 @@ function RegisterPage() {
                   outline-none
                 "
               />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-300 mb-2">
+                Account Type
+              </label>
+
+              <div className="flex gap-6">
+
+                <label className="flex items-center gap-2 text-white cursor-pointer">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="developer"
+                    checked={role === "developer"}
+                    className="accent-red-400"
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                  Developer
+                </label>
+
+                <label className="flex items-center gap-2 text-white cursor-pointer">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="recruiter"
+                    checked={role === "recruiter"}
+                    className="accent-red-400"
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                  Recruiter
+                </label>
+
+              </div>
             </div>
 
             {error && (
