@@ -8,8 +8,9 @@ function DeveloperCard({
     verifiedProjects,
 }) {
     return (
-        <div className="rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-white/10 bg-gray-950/40 p-6 backdrop-blur-md">
-            <h3 className="text-2xl font-bold text-red-300">
+        <div className="rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-white/10
+                bg-white/5 backdrop-blur-md p-6 ">
+            <h3 className="text-2xl font-bold text-red-400">
                 {name}
             </h3>
 

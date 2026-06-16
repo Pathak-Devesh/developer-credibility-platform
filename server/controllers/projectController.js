@@ -210,15 +210,27 @@ const getAllProjects = async (req, res) => {
                 {
                     title: {
                         $regex: search,
-                        $options: "i"
-                    }
+                        $options: "i",
+                    },
                 },
                 {
                     description: {
                         $regex: search,
-                        $options: "i"
-                    }
-                }
+                        $options: "i",
+                    },
+                },
+                {
+                    techStack: {
+                        $regex: search,
+                        $options: "i",
+                    },
+                },
+                {
+                    detectedTechnologies: {
+                        $regex: search,
+                        $options: "i",
+                    },
+                },
             ];
         }
         if (tech) {
@@ -233,7 +245,7 @@ const getAllProjects = async (req, res) => {
 
         const projects = await Project.find(filter)
             .populate("owner", "name")
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1, _id: -1 })
             .skip(skip)
             .limit(limit);;
 
