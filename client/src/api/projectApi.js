@@ -21,3 +21,7 @@ export const getMyProjects = () => {
 export const createProject = (projectData) => {
     return api.post("/projects", projectData);
 };
+
+export const deleteProject = (projectId) => {
+    return api.delete(`/projects/${projectId}`);
+};

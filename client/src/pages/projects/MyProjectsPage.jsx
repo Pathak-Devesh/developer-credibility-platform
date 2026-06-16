@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyProjects } from "../../api/projectApi";
+import { getMyProjects, deleteProject, } from "../../api/projectApi";
 import MyProjectCard from "../../components/project/MyProjectCard";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,38 @@ function MyProjectsPage() {
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
+
+    const handleDelete = async (projectId) => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this project?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            await deleteProject(projectId);
+
+            setProjects((prev) =>
+                prev.filter(
+                    (project) => project._id !== projectId
+                )
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                error.response?.data?.message ||
+                "Failed to delete project"
+            );
+
+        }
+    };
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -47,6 +79,11 @@ function MyProjectsPage() {
 
             </div>
 
+            <p className="text-gray-400 my-5">
+                {projects.length} Project
+                {projects.length !== 1 ? "s" : ""}
+            </p>
+
             {loading && (
                 <p className="text-white">
                     Loading projects...
@@ -77,6 +114,7 @@ function MyProjectsPage() {
                         <MyProjectCard
                             key={project._id}
                             project={project}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </div>

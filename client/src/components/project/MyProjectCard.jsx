@@ -1,4 +1,4 @@
-function MyProjectCard({ project }) {
+function MyProjectCard({ project, onDelete, }) {
     return (
         <div
             className="
@@ -12,7 +12,7 @@ function MyProjectCard({ project }) {
                 p-6
             "
         >
-            
+
 
             <div className="flex items-start justify-between gap-4">
 
@@ -40,13 +40,13 @@ function MyProjectCard({ project }) {
 
             </div>
 
-           
+
 
             <p className="text-gray-400 mt-4 line-clamp-3">
                 {project.description}
             </p>
 
-            
+
 
             <div className="mt-5">
                 <p className="text-sm font-medium text-gray-300 mb-2">
@@ -65,7 +65,7 @@ function MyProjectCard({ project }) {
                 </div>
             </div>
 
-           
+
 
             {project.detectedTechnologies?.length > 0 && (
                 <div className="mt-5">
@@ -180,15 +180,8 @@ function MyProjectCard({ project }) {
                 </button>
 
                 <button
-                    className="
-                        px-4 py-2
-                        rounded-md
-                        bg-red-500/20
-                        text-red-400
-                        hover:bg-red-500/30
-                        transition-colors
-                    "
-                >
+                    onClick={() => onDelete(project._id)}
+                    className="px-4 py-2 rounded-md bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors " >
                     Delete
                 </button>
 
