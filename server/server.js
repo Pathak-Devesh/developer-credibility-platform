@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoutes")
 const projectRoutes = require("./routes/projectRoutes")
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 require('dotenv').config();
 
@@ -31,7 +32,7 @@ app.use("/api/user", userRoutes);
 
 app.use("/api/projects", projectRoutes);
 
-
+app.use("/api/dashboard",dashboardRoutes);
 
 app.get('/', (req,res) => {
     res.send("Hello World!!");

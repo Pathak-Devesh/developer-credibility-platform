@@ -1,11 +1,28 @@
 function ProjectDetails({ project }) {
 
+    const languageColors = {
+        JavaScript: "bg-yellow-400",
+        TypeScript: "bg-blue-500",
+        HTML: "bg-orange-500",
+        CSS: "bg-cyan-400",
+        Python: "bg-green-500",
+        Java: "bg-red-500",
+        C: "bg-gray-400",
+        "C++": "bg-blue-400",
+        CSharp: "bg-purple-500",
+        PHP: "bg-indigo-500",
+        Go: "bg-sky-400",
+        Rust: "bg-orange-600",
+    };
+
     const languages =
         project.githubAnalytics?.languages || {};
 
     const totalBytes =
         Object.values(languages)
             .reduce((sum, value) => sum + value, 0);
+
+
 
     return (
         <section className="max-w-6xl mx-auto px-6 py-12">
@@ -18,13 +35,14 @@ function ProjectDetails({ project }) {
                         {project.title}
                     </h1>
 
-                    <div className="mt-4">
+                    <div className="mt-4 text-lg">
 
                         <p className="text-gray-300">
                             by{" "}
-                            <span className="font-semibold text-red-400">
+                            <button
+                                className="font-semibold text-red-400 hover:text-rose-600 transition-colors ">
                                 {project.owner?.name}
-                            </span>
+                            </button>
                         </p>
 
                         {project.owner?.headline && (
@@ -333,14 +351,26 @@ function ProjectDetails({ project }) {
                                     ((bytes / totalBytes) * 100)
                                         .toFixed(1);
 
+                                const barColor =
+                                    languageColors[language] ||
+                                    "bg-red-400";
+
                                 return (
                                     <div key={language}>
 
                                         <div className="flex justify-between mb-2">
 
-                                            <span className="text-white">
-                                                {language}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+
+                                                <div
+                                                    className={`w-3 h-3 rounded-full ${barColor}`}
+                                                />
+
+                                                <span className="text-white">
+                                                    {language}
+                                                </span>
+
+                                            </div>
 
                                             <span className="text-gray-400">
                                                 {percentage}%
@@ -351,10 +381,7 @@ function ProjectDetails({ project }) {
                                         <div className="h-3 bg-black/20 rounded-full overflow-hidden">
 
                                             <div
-                                                className="
-                                        h-full
-                                        bg-red-400
-                                    "
+                                                className={`h-full rounded-full ${barColor}`}
                                                 style={{
                                                     width: `${percentage}%`
                                                 }}

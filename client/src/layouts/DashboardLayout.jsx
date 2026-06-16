@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import backgroundImage from "../assets/images/background.png";
+import Footer from "../components/common/Footer";
 
 import DashboardNavbar from "../components/dashboard/DashboardNavbar";
 
@@ -14,6 +15,8 @@ function DashboardLayout() {
       <main>
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }

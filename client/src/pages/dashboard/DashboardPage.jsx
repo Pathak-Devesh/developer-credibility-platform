@@ -1,5 +1,265 @@
+import { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
+
+import { AuthContext } from "../../context/AuthContext";
+import { getDashboard } from "../../api/dashboardApi";
+
 function DashboardPage() {
-  return <h1>Dashboard Page</h1>;
+
+    const { user } = useContext(AuthContext);
+
+    const [dashboard, setDashboard] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+
+        const fetchDashboard = async () => {
+
+            try {
+
+                const response =
+                    await getDashboard();
+
+                setDashboard(response.data);
+
+            } catch (error) {
+
+                setError(
+                    error.response?.data?.message ||
+                    "Failed to load dashboard"
+                );
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        };
+
+        fetchDashboard();
+
+    }, []);
+
+    if (loading) {
+        return (
+            <p className="text-white p-10">
+                Loading dashboard...
+            </p>
+        );
+    }
+
+    if (error) {
+        return (
+            <p className="text-red-400 p-10">
+                {error}
+            </p>
+        );
+    }
+
+    return (
+        <section className="max-w-7xl mx-auto px-6 py-12">
+
+            {/* Header */}
+
+            <h1 className="text-4xl font-bold text-white">
+                Welcome Back, {user?.name} 
+            </h1>
+
+            <p className="text-gray-400 mt-2">
+                Here's a summary of your developer profile.
+            </p>
+
+            {/* Stats */}
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+
+                <div className="bg-gray-900/30 border  backdrop-blur-md border-gray-800 p-6 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                    <p className="text-gray-400">
+                        Projects
+                    </p>
+
+                    <p className="text-3xl font-bold text-white mt-2">
+                        {dashboard.stats.totalProjects}
+                    </p>
+                </div>
+
+                <div className="bg-gray-900/30 border  backdrop-blur-md border-gray-800 p-6 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                    <p className="text-gray-400">
+                        Verified Projects
+                    </p>
+
+                    <p className="text-3xl font-bold text-green-400 mt-2">
+                        {dashboard.stats.verifiedProjects}
+                    </p>
+                </div>
+
+                <div className="bg-gray-900/30 border  backdrop-blur-md border-gray-800 p-6 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                    <p className="text-gray-400">
+                        Pending Projects
+                    </p>
+
+                    <p className="text-3xl font-bold text-yellow-400 mt-2">
+                        {dashboard.stats.pendingProjects}
+                    </p>
+                </div>
+
+                <div className="bg-gray-900/30 border  backdrop-blur-md border-gray-800 p-6 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                    <p className="text-gray-400">
+                        Credibility Score
+                    </p>
+
+                    <p className="text-3xl font-bold text-red-400 mt-2">
+                        {dashboard.stats.credibilityScore}
+                    </p>
+                </div>
+
+            </div>
+
+            {/* Skills */}
+
+            <div className="mt-12">
+
+                <h2 className="text-3xl font-bold text-white mb-6">
+                    Skill Verification
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-4">
+
+                    {dashboard.skills.map((skill) => (
+
+                        <div
+                            key={skill.skill}
+                            className="
+                                bg-gray-900/30  backdrop-blur-md
+                                border border-gray-800
+                                p-5
+                                rounded-bl-3xl
+                                rounded-tr-3xl
+                                rounded-br-md
+                                rounded-tl-md
+                            "
+                        >
+
+                            <div className="flex items-center justify-between">
+
+                                <h3 className="text-lg font-semibold text-white">
+                                    {skill.skill}
+                                </h3>
+
+                                {skill.status === "verified" ? (
+                                    <span className="text-green-400 text-sm font-medium">
+                                        VERIFIED
+                                    </span>
+                                ) : (
+                                    <span className="text-yellow-400 text-sm font-medium">
+                                        NOT ENOUGH EVIDENCE
+                                    </span>
+                                )}
+
+                            </div>
+
+                            {skill.sources.length > 0 ? (
+
+                                <p className="text-gray-400 text-sm mt-2">
+                                    Source: {skill.sources.join(", ")}
+                                </p>
+
+                            ) : (
+
+                                <p className="text-gray-500 text-sm mt-2">
+                                    No evidence found
+                                </p>
+
+                            )}
+
+                        </div>
+
+                    ))}
+
+                </div>
+
+            </div>
+
+            {/* Recent Projects */}
+
+            <div className="mt-12">
+
+                <div className="flex items-center justify-between mb-6">
+
+                    <h2 className="text-3xl font-bold text-white">
+                        Recent Projects
+                    </h2>
+
+                    <Link
+                        to="/dashboard/projects"
+                        className="!text-red-400 hover:!text-red-300"
+                    >
+                        View All →
+                    </Link>
+
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    {dashboard.recentProjects.map((project) => (
+
+                        <div
+                            key={project._id}
+                            className="
+                                bg-gray-900/30  backdrop-blur-md
+                                border border-gray-800
+                                p-5
+                                rounded-bl-3xl
+                                rounded-tr-3xl
+                                rounded-br-md
+                                rounded-tl-md
+                            "
+                        >
+
+                            <h3 className="text-white font-semibold text-lg">
+                                {project.title}
+                            </h3>
+
+                            <p className="text-gray-400 text-sm mt-3">
+                                {project.description.length > 100
+                                    ? `${project.description.slice(0, 100)}...`
+                                    : project.description}
+                            </p>
+
+                            <div className="mt-4">
+
+                                {project.verificationStatus === "verified" && (
+                                    <span className="text-green-400 text-sm font-medium">
+                                        VERIFIED
+                                    </span>
+                                )}
+
+                                {project.verificationStatus === "pending" && (
+                                    <span className="text-yellow-400 text-sm font-medium">
+                                        PENDING
+                                    </span>
+                                )}
+
+                                {project.verificationStatus === "failed" && (
+                                    <span className="text-red-400 text-sm font-medium">
+                                        UNVERIFIED
+                                    </span>
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    ))}
+
+                </div>
+
+            </div>
+
+        </section>
+    );
 }
 
 export default DashboardPage;
