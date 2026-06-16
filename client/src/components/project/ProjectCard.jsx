@@ -1,8 +1,8 @@
 const ProjectCard = ({ project }) => {
     return (
         <div
-            className=" rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-white/10
-                bg-white/5 backdrop-blur-md p-6 " >
+            className=" rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-gray-800
+                bg-gray-900/30 backdrop-blur-md p-6 " >
             <div className="flex items-start justify-between gap-3 mb-3">
                 <h3 className="text-xl font-semibold text-white flex-1 break-words">
                     {project.title}
