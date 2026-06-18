@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 function DeveloperCard({
+    id,
     name,
     headline,
     bio,
@@ -57,7 +60,24 @@ function DeveloperCard({
                     {credibilityScore}
                 </span>
             </div>
-            
+
+            <div className="mt-5">
+                <Link
+                    to={`/developers/${id}`}
+                    className="
+            inline-block
+            px-4 py-2
+            !text-black
+            rounded-md
+            bg-red-400
+            hover:bg-rose-500
+            transition-colors
+        "
+                >
+                    <span className="font-semibold">View Profile</span> ➜
+                </Link>
+            </div>
+
         </div>
     );
 }

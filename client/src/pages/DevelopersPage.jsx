@@ -62,6 +62,7 @@ function DevelopersPage() {
                     developers.map((developer) => (
                         <DeveloperCard
                             key={developer._id}
+                            id={developer._id}
                             name={developer.name}
                             headline={developer.headline}
                             bio={developer.bio}
