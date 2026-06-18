@@ -17,12 +17,16 @@ export default function PublicProfilePage() {
 
         const fetchProfile = async () => {
 
+
+
             try {
-
-                const response =
-                    await getDeveloperProfile(id);
-
+                const response = await getDeveloperProfile(id);
                 setProfile(response.data);
+            } catch (error) {
+                setError(error.response?.data?.message ||
+                    "Failed to load profile");
+            }
+            try {
 
                 const githubResponse =
                     await getGithubProfile(id);
@@ -31,12 +35,14 @@ export default function PublicProfilePage() {
 
             } catch (error) {
 
-                setError(
-                    error.response?.data?.message ||
-                    "Failed to load profile"
+                console.error(
+                    "GitHub profile fetch failed",
+                    error.response?.data || error.message
                 );
 
-            } finally {
+            }
+
+            finally {
 
                 setLoading(false);
 
