@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 function ProjectDetails({ project }) {
 
     const languageColors = {
@@ -39,10 +40,10 @@ function ProjectDetails({ project }) {
 
                         <p className="text-gray-300">
                             by{" "}
-                            <button
-                                className="font-semibold text-red-400 hover:text-rose-600 transition-colors ">
-                                {project.owner?.name}
-                            </button>
+                            <Link to={`/developers/${project.owner._id}`} >
+                                <span className="font-semibold text-red-400 hover:text-rose-600 transition-colors ">
+                                {project.owner?.name} </span>
+                            </Link>
                         </p>
 
                         {project.owner?.headline && (

@@ -18,20 +18,13 @@ function DashboardPage() {
 
         const fetchDashboard = async () => {
 
+
             try {
 
                 const response =
                     await getDashboard();
 
                 setDashboard(response.data);
-
-                if (user?._id && user?.githubUsername) {
-
-                    const githubResponse =
-                        await getGithubProfile(user._id);
-
-                    setGithubData(githubResponse.data);
-                }
 
             } catch (error) {
 
@@ -40,7 +33,27 @@ function DashboardPage() {
                     "Failed to load dashboard"
                 );
 
-            } finally {
+            }
+            try {
+
+                if (user?._id && user?.githubUsername) {
+
+                    const githubResponse =
+                        await getGithubProfile(user._id);
+
+                    setGithubData(githubResponse.data);
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "GitHub fetch failed:",
+                    error.response?.data || error.message
+                );
+
+            }
+            finally {
 
                 setLoading(false);
 
@@ -135,7 +148,7 @@ function DashboardPage() {
                     Skill Verification
                 </h2>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
 
                     {dashboard.skills.map((skill) => (
 
@@ -172,8 +185,8 @@ function DashboardPage() {
 
                             {skill.sources.length > 0 ? (
 
-                                <p className="text-gray-400 text-sm mt-2">
-                                    Source: {skill.sources.join(", ")}
+                                <p className="text-gray-400 text-sm mt-2 ">
+                                    Source: <span className="ms-1 px-2 py-1 rounded-md text-xs text-red-400 bg-red-500/10">{skill.sources.join(", ")}</span>
                                 </p>
 
                             ) : (

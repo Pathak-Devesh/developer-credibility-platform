@@ -63,12 +63,7 @@ const ProjectCard = ({ project }) => {
                     onClick={() => navigate(`/projects/${project._id}`)}
                     className="
             inline-block
-            px-4 py-2
-            text-black
-            rounded-md
-            bg-red-400
-            hover:bg-rose-500
-            transition-colors
+            px-4 py-2 rounded-md bg-gray-500/30 !text-gray-200 hover:bg-gray-500/50 transition-colors
         "
                 >
                     <span className="font-semibold">View Details</span> ➜
