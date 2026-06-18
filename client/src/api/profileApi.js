@@ -7,3 +7,7 @@ export const getProfile = () => {
 export const updateProfile = (profileData) => {
   return api.put("/user/profile", profileData);
 };
+
+export const getGithubProfile = (userId) => {
+    return api.get(`/user/${userId}/github`);
+};

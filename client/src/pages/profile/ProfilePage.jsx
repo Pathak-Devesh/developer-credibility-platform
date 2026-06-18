@@ -106,7 +106,7 @@ export default function ProfilePage() {
                             transition
                         "
           >
-            Edit Profile
+            ✎ Edit Profile
           </button>
         )}
       </div>

@@ -97,7 +97,9 @@ const getPublicProfile = async (req, res) => {
         return res.status(200).json({
             user,
             projects,
-            credibility
+            credibility,
+            skillVerification,
+            skillSummary,
         });
 
     } catch (error) {

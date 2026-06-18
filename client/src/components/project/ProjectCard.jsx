@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 const ProjectCard = ({ project }) => {
+
+    const navigate = useNavigate();
+
     return (
         <div
             className=" rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-gray-800
@@ -10,10 +15,10 @@ const ProjectCard = ({ project }) => {
 
                 <span
                     className={`text-xs px-2 py-1 rounded-full shrink-0 ${project.verificationStatus === "verified"
-                            ? "bg-green-500/20 text-green-400"
-                            : project.verificationStatus === "pending"
-                                ? "bg-yellow-500/20 text-yellow-400"
-                                : "bg-red-500/20 text-red-400"
+                        ? "bg-green-500/20 text-green-400"
+                        : project.verificationStatus === "pending"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : "bg-red-500/20 text-red-400"
                         }
     `}
                 >
@@ -52,6 +57,23 @@ const ProjectCard = ({ project }) => {
                 <span>
                     🍴 {project.githubAnalytics?.forks || 0}
                 </span>
+            </div>
+            <div className="mt-5">
+                <button
+                    onClick={() => navigate(`/projects/${project._id}`)}
+                    className="
+            px-4 py-2
+            rounded-md
+            border
+            border-teal-400
+        bg-teal-400/20
+        text-teal-400
+        hover:bg-teal-600/50 hover:text-teal-600
+            transition-colors
+        "
+                >
+                    View Details ➜
+                </button>
             </div>
         </div>
     );

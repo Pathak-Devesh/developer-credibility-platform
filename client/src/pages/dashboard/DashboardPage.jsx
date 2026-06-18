@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
 import { getDashboard } from "../../api/dashboardApi";
+import { getGithubProfile } from "../../api/profileApi";
 
 function DashboardPage() {
 
     const { user } = useContext(AuthContext);
 
     const [dashboard, setDashboard] = useState(null);
+    const [githubData, setGithubData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -22,6 +24,14 @@ function DashboardPage() {
                     await getDashboard();
 
                 setDashboard(response.data);
+
+                if (user?._id && user?.githubUsername) {
+
+                    const githubResponse =
+                        await getGithubProfile(user._id);
+
+                    setGithubData(githubResponse.data);
+                }
 
             } catch (error) {
 
@@ -40,7 +50,7 @@ function DashboardPage() {
 
         fetchDashboard();
 
-    }, []);
+    }, [user]);
 
     if (loading) {
         return (
@@ -64,7 +74,7 @@ function DashboardPage() {
             {/* Header */}
 
             <h1 className="text-4xl font-bold text-white">
-                Welcome Back, {user?.name} 
+                Welcome Back, {user?.name}
             </h1>
 
             <p className="text-gray-400 mt-2">
@@ -181,6 +191,128 @@ function DashboardPage() {
                 </div>
 
             </div>
+
+            {githubData && (
+                <div className="mt-12">
+
+                    <h2 className="text-3xl font-bold text-white mb-6">
+                        GitHub Overview
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                        <div className="bg-gray-900/30 border border-gray-800 backdrop-blur-md p-5 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                            <p className="text-gray-400">
+                                Followers
+                            </p>
+
+                            <p className="text-3xl font-bold text-white mt-2">
+                                {githubData.profile.followers}
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-900/30 border border-gray-800 backdrop-blur-md p-5 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                            <p className="text-gray-400">
+                                Following
+                            </p>
+
+                            <p className="text-3xl font-bold text-white mt-2">
+                                {githubData.profile.following}
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-900/30 border border-gray-800 backdrop-blur-md p-5 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                            <p className="text-gray-400">
+                                Public Repositories
+                            </p>
+
+                            <p className="text-3xl font-bold text-white mt-2">
+                                {githubData.profile.publicRepos}
+                            </p>
+                        </div>
+
+                        <div className="bg-gray-900/30 border border-gray-800 backdrop-blur-md p-5 rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md">
+                            <p className="text-gray-400">
+                                GitHub Username
+                            </p>
+
+                            <p className="text-lg font-semibold text-white mt-2">
+                                {githubData.profile.login}
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            )}
+
+            {githubData?.repositories?.length > 0 && (
+                <div className="mt-12">
+
+                    <h2 className="text-3xl font-bold text-white mb-6">
+                        Top GitHub Repositories
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        {githubData.repositories
+                            .slice(0, 3)
+                            .map((repo) => (
+
+                                <a
+                                    key={repo.name}
+                                    href={repo.htmlUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="
+                            block
+                            bg-gray-900/30
+                            border border-gray-800
+                            backdrop-blur-md
+                            p-5
+                            rounded-bl-3xl
+                            rounded-tr-3xl
+                            rounded-br-md
+                            rounded-tl-md
+                            hover:border-red-400
+                            transition-colors
+                        "
+                                >
+
+                                    <h3 className="text-lg font-semibold text-white">
+                                        {repo.name}
+                                    </h3>
+
+                                    <p className="text-gray-400 text-sm mt-3 line-clamp-2">
+                                        {repo.description || "No description"}
+                                    </p>
+
+                                    <div className="flex gap-4 mt-4 text-sm text-gray-400">
+
+                                        <span>
+                                            ⭐ {repo.stars}
+                                        </span>
+
+                                        <span>
+                                            🍴 {repo.forks}
+                                        </span>
+
+                                        {repo.language && (
+                                            <span>
+                                                💻 {repo.language}
+                                            </span>
+                                        )}
+
+                                    </div>
+
+                                </a>
+
+                            ))}
+
+                    </div>
+
+                </div>
+            )}
 
             {/* Recent Projects */}
 

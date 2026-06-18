@@ -173,11 +173,29 @@ function MyProjectCard({ project, onDelete, }) {
 
                 <button
                     onClick={() =>
+                        navigate(`/dashboard/projects/${project._id}`)
+                    }
+                    className="
+        px-4 py-2
+        rounded-md
+        border
+        border-teal-400
+        bg-teal-400/20
+        text-teal-400
+        hover:bg-teal-600/50 hover:text-teal-600
+        transition-colors
+    "
+                >
+                    View Details ➜
+                </button>
+
+                <button
+                    onClick={() =>
                         navigate(`/dashboard/projects/edit/${project._id}`)
                     }
                     className=" px-4 py-2 rounded-md border border-white/10 text-white hover:border-white/30 transition-colors "
                 >
-                    Edit
+                    ✎ Edit
                 </button>
 
                 <button
