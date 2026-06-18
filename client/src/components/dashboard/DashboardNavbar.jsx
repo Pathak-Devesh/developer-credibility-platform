@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useContext, useState, useRef, useEffect } from "react";
 
 
 export default function DashboardNavbar() {
@@ -10,7 +10,10 @@ export default function DashboardNavbar() {
         setUser,
         setToken,
     } = useContext(AuthContext);
+
     const navigate = useNavigate();
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -20,6 +23,28 @@ export default function DashboardNavbar() {
 
         navigate("/login");
     };
+
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+    }, []);
 
     const navLinkClass = ({ isActive }) =>
         `font-semibold
@@ -58,38 +83,86 @@ export default function DashboardNavbar() {
                 </NavLink>
             </div>
 
-            <div className="flex items-center gap-3">
-
-                <div
-                    className="
-            h-7 w-7
-            rounded-full
-            bg-red-400
-            text-black
-            flex items-center justify-center
-            font-semibold
-        "
-                >
-                    {user?.name?.charAt(0).toUpperCase()}
-                </div>
-
-                <span className="text-white">
-                    {user?.name}
-                </span>
+            <div className="relative">
 
                 <button
-                    onClick={handleLogout}
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="
-            px-3 py-1
-            border border-white/10
-            rounded-md
+            flex items-center gap-3
+            rounded-br-xl rounded-tl-xl rounded-bl-sm rounded-tr-sm
+            border border-gray-800 bg-gray-900/30
+            px-3 py-2
             hover:border-red-400
-            hover:text-red-400
             transition-all duration-200
         "
                 >
-                    Logout
-                </button>
+
+                    <div
+                        className="
+                h-6 w-6
+                rounded-full
+                bg-red-400
+                text-black
+                flex items-center justify-center
+                font-semibold
+            "
+                    >
+                        {user?.name?.charAt(0).toUpperCase()}
+                    </div>
+
+                    <span className="text-white">
+                        {user?.name}
+                    </span>
+
+                    <span className="text-xs text-gray-400">
+                        {isDropdownOpen ? "▲" : "▼"}
+                    </span>
+
+                </button >
+
+                {isDropdownOpen && (
+                    <div ref={dropdownRef}
+                        className="
+            absolute right-0 mt-1 w-full
+            overflow-hidden
+            rounded-lg 
+            border border-gray-800
+            bg-gray-950
+            shadow-xl
+        "
+                    >
+
+                        <NavLink
+                            to="/dashboard/profile"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="
+        block w-full
+        px-4 py-3
+        text-left
+        hover:bg-white/10
+        transition-colors
+    "
+                        >
+                            My Profile
+                        </NavLink>
+
+                        <button
+                            onClick={handleLogout}
+                            className="
+                block w-full
+                px-4 py-3
+                text-left
+                text-red-400
+                hover:bg-white/10
+                hover:text-red-500
+                transition-colors
+            "
+                        >
+                            Logout ➜]
+                        </button>
+
+                    </div>
+                )}
 
             </div>
 
