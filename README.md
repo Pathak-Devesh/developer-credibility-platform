@@ -2,6 +2,16 @@
 
 A full-stack MERN platform that helps developers showcase verified projects, validate skills using GitHub-backed evidence, and build credibility scores while enabling recruiters to discover and save trusted developer profiles.
 
+## Live Demo
+
+🚀 Frontend: https://developer-credibility-platform.vercel.app
+
+⚙️ Backend API: https://developer-credibility-api.onrender.com
+
+📂 Repository: https://github.com/Pathak-Devesh/developer-credibility-platform
+
+> Note: The backend is hosted on Render's free tier and may take up to 60 seconds to wake up after periods of inactivity.
+
 ---
 
 ## Overview
@@ -335,7 +345,7 @@ GET /api/dashboard
 
 ## Clone Repository
 
-git clone <repository-url>
+git clone git@github.com:Pathak-Devesh/developer-credibility-platform.git
 
 cd developer-credibility-platform
 
