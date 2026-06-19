@@ -14,13 +14,13 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
   })
 );
 
 
 
-const port= process.env.PORT;
+const port = process.env.PORT || 5000;
 
 connectDB();
 
