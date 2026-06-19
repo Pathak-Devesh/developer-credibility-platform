@@ -11,3 +11,15 @@ export const updateProfile = (profileData) => {
 export const getGithubProfile = (userId) => {
     return api.get(`/user/${userId}/github`);
 };
+
+export const getSavedDevelopers = () => {
+    return api.get("/user/saved");
+};
+
+export const removeSavedDeveloper = (developerId) => {
+    return api.delete(`/user/saved/${developerId}`);
+};
+
+export const saveDeveloper = (developerId) => {
+    return api.post(`/user/saved/${developerId}`);
+};

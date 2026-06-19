@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, detailsPath }) => {
 
     const navigate = useNavigate();
 
@@ -60,7 +60,12 @@ const ProjectCard = ({ project }) => {
             </div>
             <div className="mt-5">
                 <button
-                    onClick={() => navigate(`/projects/${project._id}`)}
+                    onClick={() =>
+                        navigate(
+                            detailsPath ||
+                            `/projects/${project._id}`
+                        )
+                    }
                     className="
             inline-block
             px-4 py-2 rounded-md bg-gray-500/30 !text-gray-200 hover:bg-gray-500/50 transition-colors

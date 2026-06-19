@@ -67,6 +67,7 @@ export default function DashboardNavbar() {
             </div>
 
             <div className="flex gap-6">
+
                 <NavLink
                     to="/dashboard"
                     end
@@ -75,12 +76,40 @@ export default function DashboardNavbar() {
                     Dashboard
                 </NavLink>
 
-                <NavLink
-                    to="/dashboard/projects"
-                    className={navLinkClass}
-                >
-                    My Projects
-                </NavLink>
+                {user?.role === "developer" && (
+                    <NavLink
+                        to="/dashboard/projects"
+                        className={navLinkClass}
+                    >
+                        My Projects
+                    </NavLink>
+                )}
+
+                {user?.role === "recruiter" && (
+                    <>
+                        <NavLink
+                            to="/dashboard/developers"
+                            className={navLinkClass}
+                        >
+                            Developers
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/all-projects"
+                            className={navLinkClass}
+                        >
+                            Projects
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/saved-developers"
+                            className={navLinkClass}
+                        >
+                            Saved Developers
+                        </NavLink>
+                    </>
+                )}
+
             </div>
 
             <div className="relative">
@@ -88,7 +117,7 @@ export default function DashboardNavbar() {
                 <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="
-            flex items-center gap-3
+            flex items-center gap-3 
             rounded-br-xl rounded-tl-xl rounded-bl-sm rounded-tr-sm
             border border-gray-800 bg-gray-950
             px-3 py-2
@@ -110,7 +139,7 @@ export default function DashboardNavbar() {
                         {user?.name?.charAt(0).toUpperCase()}
                     </div>
 
-                    <span className="text-white">
+                    <span className="text-white min-w-[30px]">
                         {user?.name}
                     </span>
 
@@ -123,7 +152,7 @@ export default function DashboardNavbar() {
                 {isDropdownOpen && (
                     <div ref={dropdownRef}
                         className="
-            absolute right-0 mt-1 w-full
+            absolute right-0 mt-1 w-full 
             overflow-hidden
             rounded-lg 
             border border-gray-800

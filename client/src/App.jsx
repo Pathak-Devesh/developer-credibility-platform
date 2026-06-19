@@ -17,6 +17,7 @@ import CreateProjectPage from "./pages/projects/CreateProjectPage";
 import EditProjectPage from "./pages/projects/EditProjectPage";
 import ProjectDetailsPage from "./pages/projects/ProjectDetailsPage";
 import PublicProfilePage from "./pages/profile/PublicProfilePage";
+import SavedDevelopersPage from "./pages/dashboard/SavedDevelopersPage";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
         element: <DashboardPage />,
       },
       {
+        path: "saved-developers",
+        element: <SavedDevelopersPage />,
+      },
+      {
         path: "projects",
         element: <MyProjectsPage />,
       },
@@ -85,6 +90,22 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "developers",
+        element: <DevelopersPage />,
+      },
+      {
+        path: "developers/:id",
+        element: <PublicProfilePage />,
+      },
+      {
+        path: "all-projects",
+        element: <ProjectsPage />,
+      },
+      {
+        path: "all-projects/:id",
+        element: <ProjectDetailsPage />,
       },
     ]
   }

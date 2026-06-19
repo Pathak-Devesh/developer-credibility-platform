@@ -37,7 +37,16 @@ const updateProfile = async (req, res) => {
             });
         }
 
-        const { bio, headline, skills, githubUsername, linkedinUrl, portfolioUrl } = req.body;
+        const {
+            bio,
+            headline,
+            skills,
+            githubUsername,
+            linkedinUrl,
+            portfolioUrl,
+            company,
+            designation
+        } = req.body;
 
         if (bio !== undefined) {
             user.bio = bio;
@@ -56,6 +65,13 @@ const updateProfile = async (req, res) => {
         }
         if (portfolioUrl !== undefined) {
             user.portfolioUrl = portfolioUrl;
+        }
+        if (company !== undefined) {
+            user.company = company;
+        }
+
+        if (designation !== undefined) {
+            user.designation = designation;
         }
 
         await user.save();
@@ -82,17 +98,17 @@ const getPublicProfile = async (req, res) => {
             });
         }
 
-        const projects = await Project.find({owner: user._id})
+        const projects = await Project.find({ owner: user._id })
             .select("title description githubUrl liveUrl techStack verificationStatus createdAt detectedTechnologies githubAnalytics")
             .sort({ createdAt: -1 });
 
         const verifiedProjects = projects.filter((project) => project.verificationStatus === "verified");
 
-        const skillVerification = verifySkills(user.skills,verifiedProjects);
+        const skillVerification = verifySkills(user.skills, verifiedProjects);
 
         const skillSummary = calculateSkillVerificationSummary(skillVerification);
 
-        const credibility = calculateCredibilityScore(user,skillSummary,verifiedProjects.length);    
+        const credibility = calculateCredibilityScore(user, skillSummary, verifiedProjects.length);
 
         return res.status(200).json({
             user,
@@ -262,7 +278,7 @@ const getAllDevelopers = async (req, res) => {
             .select(
                 "name headline skills githubUsername linkedinUrl portfolioUrl bio"
             )
-            .sort({ createdAt: -1,_id: -1 })
+            .sort({ createdAt: -1, _id: -1 })
             .skip(skip)
             .limit(limit);
 
@@ -319,9 +335,130 @@ const getAllDevelopers = async (req, res) => {
     }
 };
 
+const saveDeveloper = async (req, res) => {
+    try {
+
+        const recruiter = await User.findById(req.user.id);
+
+        if (!recruiter) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (recruiter.role !== "recruiter") {
+            return res.status(403).json({
+                message: "Only recruiters can save developers"
+            });
+        }
+
+        const developer = await User.findById(req.params.developerId);
+
+        if (!developer || developer.role !== "developer") {
+            return res.status(404).json({
+                message: "Developer not found"
+            });
+        }
+
+        const alreadySaved = recruiter.savedDevelopers.some(
+            (item) =>
+                item.developer.toString() === developer._id.toString()
+        );
+
+        if (alreadySaved) {
+            return res.status(400).json({
+                message: "Developer already saved"
+            });
+        }
+
+        recruiter.savedDevelopers.push({
+            developer: developer._id
+        });
+
+        await recruiter.save();
+
+        return res.status(200).json({
+            message: "Developer saved successfully"
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+
+    }
+};
+
+const removeSavedDeveloper = async (req, res) => {
+    try {
+
+        const recruiter = await User.findById(req.user.id);
+
+        if (!recruiter) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        recruiter.savedDevelopers =
+            recruiter.savedDevelopers.filter(
+                (item) =>
+                    item.developer.toString() !==
+                    req.params.developerId
+            );
+
+        await recruiter.save();
+
+        return res.status(200).json({
+            message: "Developer removed successfully"
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+
+    }
+};
+
+const getSavedDevelopers = async (req, res) => {
+    try {
+
+        const recruiter = await User.findById(req.user.id)
+            .populate({
+                path: "savedDevelopers.developer",
+                select:
+                    "name headline skills githubUsername bio"
+            });
+
+        if (!recruiter) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            savedDevelopers: recruiter.savedDevelopers
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+
+    }
+};
+
 const onlyAdmin = async (req, res) => {
     return res.json({
         message: "Welcome admin"
     });
 };
-module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile,getSkillVerification,getAllDevelopers };
+module.exports = { getProfile, onlyAdmin, updateProfile, getPublicProfile, getGithubProfile,
+     getSkillVerification, getAllDevelopers ,saveDeveloper,removeSavedDeveloper,getSavedDevelopers};

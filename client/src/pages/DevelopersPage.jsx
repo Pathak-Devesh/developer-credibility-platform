@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllDevelopers } from "../api/userApi";
 import DeveloperCard from "../components/profile/DeveloperCard";
+import { useLocation } from "react-router-dom";
 
 function DevelopersPage() {
 
@@ -8,6 +9,11 @@ function DevelopersPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [developers, setDevelopers] = useState([]);
     const [search, setSearch] = useState("");
+
+    const location = useLocation();
+
+    const isDashboardView =
+        location.pathname.startsWith("/dashboard");
 
     useEffect(() => {
         const fetchDevelopers = async () => {
@@ -70,6 +76,11 @@ function DevelopersPage() {
                             githubUsername={developer.githubUsername}
                             credibilityScore={developer.credibility.score}
                             verifiedProjects={developer.verifiedProjects}
+                            profilePath={
+                                isDashboardView
+                                    ? `/dashboard/developers/${developer._id}`
+                                    : `/developers/${developer._id}`
+                            }
                         />
                     ))
                 )}

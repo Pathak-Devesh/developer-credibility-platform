@@ -31,6 +31,9 @@ export default function ProfilePage() {
     linkedinUrl: user?.linkedinUrl || "",
     portfolioUrl: user?.portfolioUrl || "",
     skills: user?.skills?.join(", ") || "",
+
+    company: user?.company || "",
+    designation: user?.designation || "",
   });
 
   const handleChange = (e) => {
@@ -48,11 +51,14 @@ export default function ProfilePage() {
 
       const payload = {
         ...formData,
-        skills: formData.skills
+      };
+
+      if (user?.role === "developer") {
+        payload.skills = formData.skills
           .split(",")
           .map((skill) => skill.trim())
-          .filter(Boolean),
-      };
+          .filter(Boolean);
+      }
 
       const response = await updateProfile(payload);
 
@@ -87,7 +93,9 @@ export default function ProfilePage() {
           </h1>
 
           <p className="text-gray-400 mt-2">
-            Manage your public developer information.
+            {user?.role === "developer"
+              ? "Manage your public developer information."
+              : "Manage your recruiter profile information."}
           </p>
         </div>
 
@@ -111,7 +119,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {!isEditing && (<div
+      {!isEditing && user?.role === "developer" && (<div
         className="
         mb-8
         rounded-2xl
@@ -286,7 +294,84 @@ export default function ProfilePage() {
           />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        {user?.role === "recruiter" && (
+          <div className="grid md:grid-cols-2 gap-6">
+
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Company
+              </label>
+
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className="
+          w-full
+          rounded-lg
+          border border-white/10
+          bg-white/5
+          px-4 py-3
+          text-white
+          disabled:opacity-60
+        "
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Designation
+              </label>
+
+              <input
+                type="text"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className="
+          w-full
+          rounded-lg
+          border border-white/10
+          bg-white/5
+          px-4 py-3
+          text-white
+          disabled:opacity-60
+        "
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm text-gray-400 mb-2">
+                LinkedIn URL
+              </label>
+
+              <input
+                type="text"
+                name="linkedinUrl"
+                value={formData.linkedinUrl}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className="
+          w-full
+          rounded-lg
+          border border-white/10
+          bg-white/5
+          px-4 py-3
+          text-white
+          disabled:opacity-60
+        "
+              />
+            </div>
+
+          </div>
+        )}
+
+
+
+        {user?.role === "developer" && (<div className="grid md:grid-cols-2 gap-6">
 
           <div>
             <label className="block text-sm text-gray-400 mb-2">
@@ -334,9 +419,9 @@ export default function ProfilePage() {
             />
           </div>
 
-        </div>
+        </div>)}
 
-        <div>
+        {user?.role === "developer" && (<div>
           <label className="block text-sm text-gray-400 mb-2">
             Portfolio URL
           </label>
@@ -357,9 +442,9 @@ export default function ProfilePage() {
                             disabled:opacity-60
                         "
           />
-        </div>
+        </div>)}
 
-        <div>
+        {user?.role === "developer" && (<div>
           <label className="block text-sm text-gray-400 mb-2">
             Skills
           </label>
@@ -381,7 +466,7 @@ export default function ProfilePage() {
                             disabled:opacity-60
                         "
           />
-        </div>
+        </div>)}
 
         {isEditing && (
           <div className="flex justify-end gap-3">
@@ -396,6 +481,8 @@ export default function ProfilePage() {
                   linkedinUrl: user?.linkedinUrl || "",
                   portfolioUrl: user?.portfolioUrl || "",
                   skills: user?.skills?.join(", ") || "",
+                  company: user?.company || "",
+                  designation: user?.designation || "",
                 });
 
                 setIsEditing(false);

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { getAllProjects } from "../../api/projectApi";
 import ProjectCard from "../../components/project/ProjectCard";
+import { useLocation } from "react-router-dom";
 
 function ProjectsPage() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -10,6 +11,11 @@ function ProjectsPage() {
     const [search, setSearch] = useState("");
 
     const [loading, setLoading] = useState(false);
+
+    const location = useLocation();
+
+    const isDashboardView =
+        location.pathname.startsWith("/dashboard");
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -79,6 +85,11 @@ function ProjectsPage() {
                             <ProjectCard
                                 key={project._id}
                                 project={project}
+                                detailsPath={
+                                    isDashboardView
+                                        ? `/dashboard/all-projects/${project._id}`
+                                        : `/projects/${project._id}`
+                                }
                             />
                         ))
                     )}

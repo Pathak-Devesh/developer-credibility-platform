@@ -37,12 +37,7 @@ function LoginPage() {
 
       setUser(profileResponse.data);
 
-
-      if (profileResponse.data.role === "developer") {
-        navigate("/dashboard");
-      } else {
-        navigate("/recruiter-coming-soon");
-      }
+      navigate("/dashboard");
 
     } catch (error) {
       setError(

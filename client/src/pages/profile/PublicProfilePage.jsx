@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { saveDeveloper, removeSavedDeveloper, getSavedDevelopers, } from "../../api/profileApi";
 
 
 import { getDeveloperProfile, getGithubProfile, } from "../../api/userApi";
@@ -12,6 +14,9 @@ export default function PublicProfilePage() {
     const [githubData, setGithubData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const { user } = useContext(AuthContext);
+
+    const [isSaved, setIsSaved] = useState(false);
 
     useEffect(() => {
 
@@ -22,6 +27,18 @@ export default function PublicProfilePage() {
             try {
                 const response = await getDeveloperProfile(id);
                 setProfile(response.data);
+                if (user?.role === "recruiter") {
+
+                    const savedResponse =
+                        await getSavedDevelopers();
+
+                    const alreadySaved =
+                        savedResponse.data.savedDevelopers.some(
+                            (item) => item.developer._id === id
+                        );
+
+                    setIsSaved(alreadySaved);
+                }
             } catch (error) {
                 setError(error.response?.data?.message ||
                     "Failed to load profile");
@@ -70,6 +87,30 @@ export default function PublicProfilePage() {
         );
     }
 
+    const handleSaveDeveloper = async () => {
+        try {
+
+            await saveDeveloper(id);
+
+            setIsSaved(true);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleRemoveDeveloper = async () => {
+        try {
+
+            await removeSavedDeveloper(id);
+
+            setIsSaved(false);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <section className="max-w-7xl mx-auto px-6 py-12">
 
@@ -88,6 +129,49 @@ export default function PublicProfilePage() {
                 <p className="mt-4 text-lg text-gray-300 max-w-4xl leading-relaxed">
                     {profile.user.bio || "No bio available."}
                 </p>
+
+                {user?.role === "recruiter" && (
+
+    <div className="mt-6">
+
+        {isSaved ? (
+
+            <button
+                onClick={handleRemoveDeveloper}
+                className="
+                    px-5 py-3
+                    rounded-lg
+                    border border-red-400
+                    text-red-400
+                    hover:bg-red-400/10
+                    transition-colors
+                "
+            >
+                Remove From Saved
+            </button>
+
+        ) : (
+
+            <button
+                onClick={handleSaveDeveloper}
+                className="
+                    px-5 py-3
+                    rounded-lg
+                    bg-red-400
+                    text-black
+                    font-semibold
+                    hover:bg-red-300
+                    transition-colors
+                "
+            >
+                Save Developer
+            </button>
+
+        )}
+
+    </div>
+
+)}
 
             </div>
 

@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { getDashboard } from "../../api/dashboardApi";
 import { getGithubProfile } from "../../api/profileApi";
+import RecruiterDashboard from "./RecruiterDashboard";
+
 
 function DashboardPage() {
 
@@ -79,6 +81,10 @@ function DashboardPage() {
                 {error}
             </p>
         );
+    }
+
+    if (user?.role === "recruiter") {
+        return <RecruiterDashboard />;
     }
 
     return (

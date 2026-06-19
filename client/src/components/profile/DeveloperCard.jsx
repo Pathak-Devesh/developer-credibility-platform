@@ -9,7 +9,8 @@ function DeveloperCard({
     githubUsername,
     credibilityScore,
     verifiedProjects,
-}) {
+    profilePath,
+})  {
     return (
         <div className="rounded-bl-3xl rounded-tr-3xl rounded-br-md rounded-tl-md border border-gray-800
                 bg-gray-900/30 backdrop-blur-md p-6 ">
@@ -63,7 +64,7 @@ function DeveloperCard({
 
             <div className="mt-5">
                 <Link
-                    to={`/developers/${id}`}
+                    to={profilePath || `/developers/${id}`}
                     className="
             inline-block
             px-4 py-2 rounded-md bg-gray-500/30 !text-gray-200 hover:bg-gray-500/50 transition-colors

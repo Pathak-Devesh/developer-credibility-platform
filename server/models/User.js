@@ -57,7 +57,33 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
         default: ""
-    }
+    },
+
+    company: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+
+    designation: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+
+    savedDevelopers: [
+        {
+            developer: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            },
+
+            savedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]
 },
     {
         timestamps: true

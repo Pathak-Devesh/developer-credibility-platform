@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 function ProjectDetails({ project }) {
 
     const languageColors = {
@@ -15,6 +15,11 @@ function ProjectDetails({ project }) {
         Go: "bg-sky-400",
         Rust: "bg-orange-600",
     };
+
+    const location = useLocation();
+
+    const isDashboardView =
+        location.pathname.startsWith("/dashboard");
 
     const languages =
         project.githubAnalytics?.languages || {};
@@ -40,9 +45,15 @@ function ProjectDetails({ project }) {
 
                         <p className="text-gray-300">
                             by{" "}
-                            <Link to={`/developers/${project.owner._id}`} >
+                            <Link
+                                to={
+                                    isDashboardView
+                                        ? `/dashboard/developers/${project.owner._id}`
+                                        : `/developers/${project.owner._id}`
+                                }
+                            >
                                 <span className="font-semibold text-red-400 hover:text-rose-600 transition-colors ">
-                                {project.owner?.name} </span>
+                                    {project.owner?.name} </span>
                             </Link>
                         </p>
 

@@ -176,14 +176,8 @@ function MyProjectCard({ project, onDelete, }) {
                         navigate(`/dashboard/projects/${project._id}`)
                     }
                     className="
-        px-4 py-2
-        rounded-md
-        border
-        border-teal-400
-        bg-teal-400/20
-        text-teal-400
-        hover:bg-teal-600/50 hover:text-teal-600
-        transition-colors
+        inline-block
+            px-4 py-2 rounded-md bg-gray-500/30 !text-gray-200 hover:bg-gray-500/50 transition-colors
     "
                 >
                     View Details ➜
