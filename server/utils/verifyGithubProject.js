@@ -35,7 +35,12 @@ const verifyGithubProject = async (user, githubUrl) => {
 
     } catch (error) {
 
-        verificationStatus = "failed";
+        console.log(
+            "GitHub Verification Error:",
+            error.response?.data || error.message
+        );
+
+        verificationStatus = "pending";
 
     }
 
